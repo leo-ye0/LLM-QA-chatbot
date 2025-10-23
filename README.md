@@ -40,7 +40,10 @@ A Retrieval-Augmented Generation (RAG) application that allows users to "chat" w
    # Create .env file in project root
    echo "OPENAI_API_KEY=your_api_key_here" > .env
    ```
-
+5. **Set up Cohere API key**
+   ```bash
+   echo "COHERE_API_KEY=your_api_key_here" > .env
+   ```
 ## Usage
 
 ### Web Interface (Streamlit)
@@ -49,6 +52,7 @@ cd src
 python app_p1.py
 streamlit run app_p1.py
 ```
+
 - Opens web interface at `http://localhost:8501`
 - Upload PDFs using the sidebar
 - Click "Process" to create embeddings
@@ -56,6 +60,11 @@ streamlit run app_p1.py
 - Ask questions in the chat interface (auto-clears after sending)
 - Newest conversations appear at the top
 
+```bash
+cd src
+python app_p3.py
+streamlit run app_p3.py
+```
 ### Command Line Interface
 ```bash
 cd src
@@ -68,6 +77,19 @@ python app_p1.py cli
 - 🚀 Ready notification when setup complete
 - Chat directly in terminal with colored output
 - Type 'exit' to quit
+
+```bash
+cd src
+python app_p1.py cli
+```
+Example Outputs:
+- PDF Chat CLI (Cohere API)
+- LLM model [default command-r-03-2025]: Select a LLM model
+- Embedding model [default embed-english-v3.0]: Select an Embeding model
+- Enter PDF folder path: Select a path
+- Processing 1/1: Ads_cookbook.pdf
+- Finished processing PDFs. Type 'exit' to quit.
+
 
 ## Core Process
 
@@ -83,6 +105,7 @@ python app_p1.py cli
 
 - Python 3.8+
 - OpenAI API key with available credits
+- Cohere API key
 - PDF files to process
 
 ## Dependencies
