@@ -11,6 +11,21 @@ from langchain.memory import ConversationBufferMemory
 from langchain.chains import ConversationalRetrievalChain
 from htmlTemplates import css, bot_template, user_template
 from langchain_community.llms import HuggingFacePipeline, LlamaCpp
+import warnings
+warnings.simplefilter("ignore")
+
+# ANSI color codes
+class Colors:
+    RED = '\033[91m'
+    GREEN = '\033[92m'
+    YELLOW = '\033[93m'
+    BLUE = '\033[94m'
+    MAGENTA = '\033[95m'
+    CYAN = '\033[96m'
+    WHITE = '\033[97m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
+    END = '\033[0m'
 
 
 def get_pdf_text(pdf_docs):
@@ -58,13 +73,15 @@ def handle_userinput(user_question):
     response = st.session_state.conversation({'question': user_question})
     st.session_state.chat_history = response['chat_history']
 
-    for i, message in enumerate(st.session_state.chat_history):
-        if i % 2 == 0:
-            st.write(user_template.replace(
-                "{{MSG}}", message.content), unsafe_allow_html=True)
-        else:
-            st.write(bot_template.replace(
-                "{{MSG}}", message.content), unsafe_allow_html=True)
+    # Display messages in reverse order (newest first), in pairs
+    messages = st.session_state.chat_history
+    for i in range(len(messages) - 1, 0, -2):
+        # Display user message first
+        st.write(user_template.replace(
+            "{{MSG}}", messages[i-1].content), unsafe_allow_html=True)
+        # Display bot message second
+        st.write(bot_template.replace(
+            "{{MSG}}", messages[i].content), unsafe_allow_html=True)
 
 
 def main():
@@ -77,11 +94,20 @@ def main():
         st.session_state.conversation = None
     if "chat_history" not in st.session_state:
         st.session_state.chat_history = None
+    if "processing_complete" not in st.session_state:
+        st.session_state.processing_complete = False
 
     st.header("Chat with PDFs :robot_face:")
-    user_question = st.text_input("Ask questions about your documents:")
-    if user_question:
-        handle_userinput(user_question)
+    
+    with st.form(key="question_form", clear_on_submit=True):
+        user_question = st.text_input("Ask questions about your documents:", key="user_input")
+        submit_button = st.form_submit_button("Send")
+        
+    if submit_button and user_question:
+        if st.session_state.conversation:
+            handle_userinput(user_question)
+        else:
+            st.warning("Please upload and process PDFs first!")
 
     with st.sidebar:
         st.subheader("Your documents")
@@ -101,55 +127,69 @@ def main():
                 # create conversation chain
                 st.session_state.conversation = get_conversation_chain(
                     vectorstore)
+                st.session_state.processing_complete = True
+        
+        if st.session_state.processing_complete:
+            st.success("✅ Processing successful! You can now ask questions.")
 
 
 def driver():
     """Command-line interface for chatting with PDFs in a folder"""
     load_dotenv()
     
+    print(f"{Colors.BOLD}{Colors.CYAN}🤖 PDF Chat CLI{Colors.END}")
+    print(f"{Colors.BLUE}{'='*50}{Colors.END}")
+    
     # Get folder path from user
-    pdf_folder = input("Enter the path to your PDF folder: ").strip()
+    pdf_folder = input(f"{Colors.YELLOW}📁 Enter the path to your PDF folder: {Colors.END}").strip()
     if not os.path.exists(pdf_folder):
-        print("Folder not found!")
+        print(f"{Colors.RED}❌ Folder not found!{Colors.END}")
         return
     
     # Get all PDF files in folder
     pdf_files = glob.glob(os.path.join(pdf_folder, "*.pdf"))
     if not pdf_files:
-        print("No PDF files found in the folder!")
+        print(f"{Colors.RED}❌ No PDF files found in the folder!{Colors.END}")
         return
     
-    print(f"Found {len(pdf_files)} PDF files. Processing...")
+    print(f"{Colors.GREEN}✅ Found {len(pdf_files)} PDF files. Processing...{Colors.END}")
     
     # Process PDFs
     raw_text = ""
-    for pdf_file in pdf_files:
+    for i, pdf_file in enumerate(pdf_files, 1):
+        print(f"{Colors.CYAN}📄 Processing file {i}/{len(pdf_files)}: {os.path.basename(pdf_file)}{Colors.END}")
         with open(pdf_file, 'rb') as file:
             pdf_reader = PdfReader(file)
             for page in pdf_reader.pages:
                 raw_text += page.extract_text()
     
     # Get text chunks
+    print(f"{Colors.MAGENTA}🔄 Creating text chunks...{Colors.END}")
     text_chunks = get_text_chunks(raw_text)
     
     # Create vector store
+    print(f"{Colors.MAGENTA}🔄 Building vector store...{Colors.END}")
     vectorstore = get_vectorstore(text_chunks)
     
     # Create conversation chain
+    print(f"{Colors.MAGENTA}🔄 Initializing conversation chain...{Colors.END}")
     conversation = get_conversation_chain(vectorstore)
     
-    print("\nReady to chat! Type 'exit' to quit.\n")
+    print(f"\n{Colors.GREEN}{Colors.BOLD}🚀 Ready to chat! Type 'exit' to quit.{Colors.END}")
+    print(f"{Colors.BLUE}{'='*50}{Colors.END}\n")
     
     # Chat loop
     while True:
-        user_question = input("You: ").strip()
+        user_question = input(f"{Colors.BOLD}{Colors.WHITE}You: {Colors.END}").strip()
         
         if user_question.lower() == 'exit':
+            print(f"{Colors.YELLOW}👋 Goodbye!{Colors.END}")
             break
             
         if user_question:
+            print(f"{Colors.CYAN}🤔 Thinking...{Colors.END}")
             response = conversation({'question': user_question})
-            print(f"Bot: {response['answer']}\n")
+            print(f"{Colors.GREEN}{Colors.BOLD}Bot:{Colors.END} {response['answer']}\n")
 
 
 if __name__ == '__main__':

@@ -9,6 +9,8 @@ A Retrieval-Augmented Generation (RAG) application that allows users to "chat" w
 - **Vector Search**: Uses OpenAI embeddings with FAISS for semantic search
 - **Conversational Memory**: Maintains chat history using ConversationBufferMemory
 - **RAG Pipeline**: Retrieves relevant context and generates accurate answers
+- **Enhanced UI**: Auto-clearing input, newest messages first, success notifications
+- **Colored CLI**: ANSI color codes with emojis for better terminal experience
 
 ## Architecture Flow
 
@@ -50,16 +52,21 @@ streamlit run app_p1.py
 - Opens web interface at `http://localhost:8501`
 - Upload PDFs using the sidebar
 - Click "Process" to create embeddings
-- Ask questions in the chat interface
+- ✅ Success notification when processing completes
+- Ask questions in the chat interface (auto-clears after sending)
+- Newest conversations appear at the top
 
 ### Command Line Interface
 ```bash
 cd src
 python app_p1.py cli
 ```
+- 🤖 Colorful CLI with progress indicators
 - Enter path to folder containing PDFs
-- Processes all PDF files automatically
-- Chat directly in terminal
+- 📄 Real-time processing status with file names
+- 🔄 Visual feedback for each processing step
+- 🚀 Ready notification when setup complete
+- Chat directly in terminal with colored output
 - Type 'exit' to quit
 
 ## Core Process
