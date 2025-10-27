@@ -90,7 +90,7 @@ def handle_userinput(user_question):
 
 # Streamlit App
 def main():
-    load_dotenv()  # 如不想从 .env 读，可以注释并用 export/setx 设置环境变量
+    load_dotenv()
 
     st.set_page_config(page_title="Chat with PDFs (Cohere API)", page_icon=":robot_face:")
 
