@@ -121,7 +121,7 @@ def main():
 
     with st.sidebar:
         st.subheader("Cohere Cloud Models")
-        llm_model = st.text_input("LLM model", value="command-a-03-2025", help="command-a-03-2025 / command-r7b-12-2024 / command-r-08-2024")
+        llm_model = st.text_input("LLM model", value="command-a-03-2025", help="command-r7b-12-2024 / command-r-08-2024")
         emb_model = st.text_input("Embedding model", value="embed-english-v3.0",
                                   help="embed-english-v3.0 / embed-multilingual-v3.0")
         max_new_tokens = st.slider("max_tokens", 64, 2048, 512, 64)
@@ -164,7 +164,7 @@ def driver():
         print(f"{Colors.RED} COHERE_API_KEY has not been set{Colors.END}")
         return
 
-    llm_model = input(f"{Colors.YELLOW}LLM model [default command-r-03-2025]: {Colors.END}").strip() or "command-r-03-2025"
+    llm_model = input(f"{Colors.YELLOW}LLM model [default command-a-03-2025]: {Colors.END}").strip() or "command-a-03-2025"
     emb_model = input(f"{Colors.YELLOW}Embedding model [default embed-english-v3.0]: {Colors.END}").strip() or "embed-english-v3.0"
 
     folder = input(f"{Colors.YELLOW} Enter PDF folder path: {Colors.END}").strip()
