@@ -90,6 +90,18 @@ Example Outputs:
 - Processing 1/1: Ads_cookbook.pdf
 - Finished processing PDFs. Type 'exit' to quit.
 
+### React App
+```bash
+cd frontend
+npm start
+```
+- Upload single or multiple files 
+- Click process to create embeddings
+- Type questions in chatbox and click "Send"
+- "Text message" style chat window to enhance conversation experience
+- Chat history included within the chat window
+
+Note: install requirements_app.txt
 
 ## Core Process
 
