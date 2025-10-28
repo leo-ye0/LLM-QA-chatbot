@@ -59,7 +59,7 @@ def build_cohere_llm_and_embeddings(
     )
 
     embeddings = CohereEmbeddings(
-        model=emb_model,
+        model=emb_model
         # cohere_api_key=api_key 
     )
     return llm, embeddings

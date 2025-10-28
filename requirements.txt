@@ -11,6 +11,5 @@ openai
 tiktoken
 sentencepiece
 sentence_transformers
-llama-cpp-python
 cohere
 langchain-cohere

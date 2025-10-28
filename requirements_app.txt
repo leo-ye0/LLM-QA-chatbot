@@ -1,0 +1,12 @@
+fastapi==0.115.0
+uvicorn[standard]==0.30.1
+langchain==0.1.10
+langchain-community==0.0.25
+langchain-core==0.1.53
+cohere
+pypdf2
+python-dotenv
+faiss-cpu
+tqdm
+requests
+python-multipart==0.0.6
